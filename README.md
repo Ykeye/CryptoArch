@@ -1,16 +1,4 @@
 
------
-## ПОМНИ, ЮЗЕРНЕЙМ, ЕСЛИ ТЫ НАКОСЯЧИШЬ, ЗАБУДЕШЬ ПАРОЛЬ, ПОБЪЕШЬ ДИСК ИЛИ ЕЩЕ ЧТО, ОЧЕНЬ ВЕРОЯТНО, ЧТО ВСЁ СТАНЕТ ТЫКВОЙ! ДЕЛАЙ [БЭКАПЫ](https://wiki.archlinux.org/title/Synchronization_and_backup_programs)
------
-# ЧТО ДЕЛАТЬ? Я всё ЗАШИФРОВАЛ И СЛОМАЛ!
-
-Не ссы, Петруха, если ты уже разметил диски и тебе надо зайти обратно, то открывай контейнеры руками: 
-```
-cryptsetup luksOpen /dev/sdX1 luks
-mount /dev/mapper/vgcrypt-root /mnt
-arch-chroot /mnt /bin/bash
-```
-
 # Очень сильно зашифрованная инсталляция Арча
 
 **Это перевод на русский с небольшими дополнениями гайда по установке Arch Linux с шифрованием разделов на LVM с применением LUKS и GRUB для систем на базе UEFI от от [huntrar](https://www.github.com/huntrar).**
@@ -23,6 +11,22 @@ arch-chroot /mnt /bin/bash
 
 
 *Note:* Данный гайд основан на конфигуации с NVMe если у вас  SSD или HDD, замените ```/dev/nvme0nX``` with ```/dev/sdX``` соответсвенно.
+
+
+
+-----
+## ПОМНИ, ЮЗЕРНЕЙМ, ЕСЛИ ТЫ НАКОСЯЧИШЬ, ЗАБУДЕШЬ ПАРОЛЬ, ПОБЪЕШЬ ДИСК ИЛИ ЕЩЕ ЧТО, ОЧЕНЬ ВЕРОЯТНО, ЧТО ВСЁ СТАНЕТ ТЫКВОЙ! ДЕЛАЙ [БЭКАПЫ](https://wiki.archlinux.org/title/Synchronization_and_backup_programs)
+-----
+# ЧТО ДЕЛАТЬ? Я всё ЗАШИФРОВАЛ И СЛОМАЛ!
+
+Не ссы, Петруха, если ты уже разметил диски и тебе надо зайти обратно, то открывай контейнеры руками: 
+```
+cryptsetup luksOpen /dev/sdX1 luks
+mount /dev/mapper/vgcrypt-root /mnt
+arch-chroot /mnt /bin/bash
+```
+
+
 
 ## До установки
 ### Подключитесь к интернету
@@ -414,6 +418,17 @@ systemctl enable ly
 ```
 cp /usr/share/doc/i3status-rust/examples/config.toml ~.config/i3status-rust/config.toml
 ```
+
+## Добавляем Black Arch
+
+Переходим в нужную дирекорию и 
+
+```
+curl -O https://blackarch.org/strap.sh
+chmod +x strap.sh
+sudo ./strap.sh
+```
+
 --------------------
 --------------------
 --------------
