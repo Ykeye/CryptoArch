@@ -10,8 +10,10 @@
 Основано на гайде от [huntrar](https://www.github.com/huntrar)
 [Смотри Оригинал Тут](https://gist.github.com/huntrar/e42aee630bee3295b2c671d098c81268)
 + дефолтный гайд на [Arch Wiki](https://wiki.archlinux.org/index.php/Dm-crypt/Encrypting_an_entire_system#Encrypted_boot_partition_(GRUB))
-*Note:* Данный гайд основан на конфигуации с NVMe если у вас  SSD или HDD, замените ```/dev/nvme0nX``` with ```/dev/sdX``` соответсвенно.
 
+---
+*Note:* Данный гайд основан на конфигуации с NVMe если у вас  SSD или HDD, замените ```/dev/nvme0nX``` with ```/dev/sdX``` соответсвенно.
+---
 
 
 -----
