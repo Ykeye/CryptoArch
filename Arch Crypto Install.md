@@ -14,7 +14,7 @@ arch-chroot /mnt /bin/bash
 
 **Гайд по установке Arch Linux с шифрованием разделов на LVM с применением LUKS и GRUB для систем на базе UEFI.**
 Дополнительно без перевода доступен раздел по укреплению системы от атак на Secure Boot типа Evil Maid 
-Основано на гайде от github.com/huntrar - https://gist.github.com/huntrar/e42aee630bee3295b2c671d098c81268
+Основано на гайде от [github.com/huntrar] (huntrar) - https://gist.github.com/huntrar/e42aee630bee3295b2c671d098c81268
 + дефолтный гайд на [Arch Wiki](https://wiki.archlinux.org/index.php/Dm-crypt/Encrypting_an_entire_system#Encrypted_boot_partition_(GRUB))
 
 
