@@ -196,7 +196,7 @@ LANG=en_US.UTF-8
 запусти locale-gen еще раз на всякий случай
 
 ### Настройка сети
-#### Создай файл с хостнеймом
+#### Создадим файл с хостнеймом
 ```/etc/hostname```
 ```
 myhostname
@@ -219,26 +219,25 @@ This is a unique name for identifying your machine on a network.
 HOOKS="base udev autodetect modconf block keymap encrypt lvm2 filesystems keyboard fsck shutdown"
 -----
 ```
-*ЗАМЕТКО:* Внимание, тут важен порядок, и вообще, с этой хней я долго химичил, вариант выше самый актуальный. *user.append brain* 
+*ЗАМЕТКО:* Внимание, тут важен порядок! Ориентируемся на вариант выше, самый актуальный. *user.append brain* 
 -----
 ```
 HOOKS=(base udev autodetect keyboard modconf block encrypt lvm2 filesystems fsck)
 ```
 
-#### Обнови initramfs image
+#### Обновим initramfs образ
 ```
 mkinitcpio -p linux
 ```
 
-### Рутовый пароль
-#### Задай рут пароль
+### Задай рут пароль
 ```
 passwd
 ```
 
 ### Загрузчик
 
-#### Настрой GRUB чтоб бутился с /boot зашифрованной LUKS партиции
+#### Настроим  GRUB чтоб бутился с /boot зашифрованной LUKS партиции
 
 ```vim /etc/default/grub```
 
@@ -246,7 +245,7 @@ passwd
 GRUB_ENABLE_CRYPTODISK=y
 ```
 
-#### Настрой параметры ядра так, чтобы LVM диск расшифровывался при загрузке
+#### Настроим параметры GRUB так, чтобы LVM диск расшифровывался при загрузке
 
 ##### UUID можно найти введя
 ```blkid```
@@ -256,12 +255,12 @@ GRUB_ENABLE_CRYPTODISK=y
 
 ```vim /etc/default/grub```
 
-Вставь 
+##### Вставим вместо xxxxxx UUID из предыдущего шага
 ```
 GRUB_CMDLINE_LINUX="cryptdevice=UUID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx:cryptlvm root=/dev/vg/root"
 ```
 
-#### Установи GRUB на ESP для загрузки UEFI
+#### Установим и настроим efiboot manager для GRUB загрузки UEFI
 ```
 pacman -S efibootmgr
 grub-install --target=x86_64-efi --efi-directory=/efi
