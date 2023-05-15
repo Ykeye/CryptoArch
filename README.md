@@ -183,7 +183,7 @@ nvme0n1        |  259:0  |  0  | 465.8G |  0  | disk  |            |
 
 ### Время
 #### Установим часовой пояс
-Замените /Europe/Moscos/ на ваш часовой пояс из `/usr/share/zoneinfo`
+Заменим /Europe/Moscos/ на ваш часовой пояс из `/usr/share/zoneinfo`
 ```
 ln -sf /usr/share/zoneinfo/Europe/Moscow /etc/localtime
 ```
@@ -212,8 +212,7 @@ LANG=en_US.UTF-8
 ```
 myhostname
 ```
-
-This is a unique name for identifying your machine on a network.
+myhostname - произвольное сетевое имя устройства.
 
 #### Заполним /etc/hosts
 ```/etc/hosts```
