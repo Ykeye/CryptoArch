@@ -229,7 +229,8 @@ myhostname - произвольное сетевое имя устройства
 HOOKS="base udev autodetect modconf block keymap encrypt lvm2 filesystems keyboard fsck shutdown"
 
 ```
-*ЗАМЕТКО:* Внимание, тут важен порядок! Ориентируемся на вариант выше - самый актуальный.
+
+####*ЗАМЕТКО:* Внимание, тут важен порядок! Ориентируемся на вариант выше - самый актуальный.
 
 *user.append brain* 
 
