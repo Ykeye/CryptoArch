@@ -340,10 +340,10 @@ passwd example_user
 usermod --append --groups wheel example_user
 visudo
 ```
-Uncomment to allow members of group wheel to execute any command
+Раскомменть чтоб разрешить wheel
 %wheel ALL=(ALL) ALL
 
-save and exit visudo
+Сохраним и выйдем из visudo
 
 ### Установим всякую нужную дрянь 
 
