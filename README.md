@@ -145,9 +145,9 @@ i3-wm xorg xorg-xinit i3status-rust rofi xorg-server xorg-apps
 ----
  Добавь к списку какой-то из эмуляторов терминала, например:
 ------
-   -alacritty
-   -rxvt-unicode
-   -terminator
+- alacritty
+- rxvt-unicode
+- terminator
 
 ## Настраиваем систему
 ### Генерим фстаб!
