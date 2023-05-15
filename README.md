@@ -310,7 +310,7 @@ cryptsetup -v luksAddKey -i 1 /dev/nvme0n1p3 /root/secrets/crypto_keyfile.bin
 ```
 FILES=(/root/secrets/crypto_keyfile.bin)
 ```
-</details> 
+
 
 #### Пересоздадим образ
 ```
@@ -328,6 +328,7 @@ GRUB_CMDLINE_LINUX="... cryptkey=rootfs:/root/secrets/crypto_keyfile.bin"
 ```
 grub-mkconfig -o /boot/grub/grub.cfg
 ```
+</details> 
 
 #### Ограничим доступ до /boot
 ```
