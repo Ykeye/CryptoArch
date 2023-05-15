@@ -132,10 +132,7 @@ mount /dev/nvme0n1p2 /mnt/efi
 
 ## Установка
 ### Устанвливаем самый нужный софт -
-```
-base linux linux-firmware mkinitcpio lvm2 vi vim wpa_supplicant grub 
-```
-обязательный минимум
+```base linux linux-firmware mkinitcpio lvm2 vi vim wpa_supplicant grub``` ≈обязательный минимум
 
 ```
 pacstrap /mnt base linux linux-firmware mkinitcpio lvm2 vi tmux sudo dhcpcd wpa_supplicant grub openssh networkmanager network-manager-applet
