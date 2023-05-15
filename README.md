@@ -319,9 +319,6 @@ mkinitcpio -p linux
 #### Настроим параметры GRUB так, чтобы расшифровывать LUKS партицию с помощью keyfile  и хука ```encrypt```
 ```/etc/default/grub```
 
- ---
- "..." ,  если что означают, что там что-то есть, а не что надо точки ставить XD
- ---
 ```
 GRUB_CMDLINE_LINUX="... cryptkey=rootfs:/root/secrets/crypto_keyfile.bin"
 ```
