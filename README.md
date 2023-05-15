@@ -294,8 +294,8 @@ pacman -S intel-ucode
 grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
-# Это кусок, который решает проблему с тем, что пароль вводить надо 2 раза для расшифровки . (Не обязательно) 
 
+<details> <summary> Это кусок, который решает проблему с тем, что пароль вводить надо 2 раза для расшифровки . (Не обязательно) </summary>
 
 
 #### Создаем keyfile и добавим его как ключ для LUKS
@@ -305,11 +305,12 @@ head -c 64 /dev/urandom > /root/secrets/crypto_keyfile.bin && chmod 600 /root/se
 cryptsetup -v luksAddKey -i 1 /dev/nvme0n1p3 /root/secrets/crypto_keyfile.bin
 ```
 
-#### Добавим keyfile в образ initramfs
+#### Добавим keyfile в образ initramfsт
 ```/etc/mkinitcpio.conf```
 ```
 FILES=(/root/secrets/crypto_keyfile.bin)
 ```
+</details> 
 
 #### Пересоздадим образ
 ```
