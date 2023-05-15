@@ -253,7 +253,7 @@ GRUB_ENABLE_CRYPTODISK=y
 
 #### Настроим параметры GRUB так, чтобы LVM диск расшифровывался при загрузке
 
-##### UUID можно найти введя
+##### UUID можно найти так:
 ```blkid```
 ```
 /dev/nvme0n1p3: UUID="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" TYPE="crypto_LUKS" PARTLABEL="Linux LUKS" PARTUUID="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
