@@ -7,7 +7,7 @@ mount /dev/mapper/vgcrypt-root /mnt
 arch-chroot /mnt /bin/bash
 ```
 -----
-## ПОМНИ, ЮЗЕРНЕЙМ, ЕСЛИ ТЫ НАКОСЯЧИШЬ, ЗАБУДЕШЬ ПАРОЛЬ, ПОБЪЕШЬ ДИСК ИЛИ ЕЩЕ ЧТО, ОЧЕНЬ ВЕРОЯТНО, ЧТО ВСЁ СТАНЕТ ТЫКВОЙ! ДЕЛАЙ, БЛЯДЬ [БЭКАПЫ](https://wiki.archlinux.org/title/Synchronization_and_backup_programs)
+## ПОМНИ, ЮЗЕРНЕЙМ, ЕСЛИ ТЫ НАКОСЯЧИШЬ, ЗАБУДЕШЬ ПАРОЛЬ, ПОБЪЕШЬ ДИСК ИЛИ ЕЩЕ ЧТО, ОЧЕНЬ ВЕРОЯТНО, ЧТО ВСЁ СТАНЕТ ТЫКВОЙ! ДЕЛАЙ [БЭКАПЫ](https://wiki.archlinux.org/title/Synchronization_and_backup_programs)
 -----
 
 # Очень сильно зашифрованная инсталляция Арча
