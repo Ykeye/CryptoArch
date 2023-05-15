@@ -28,6 +28,14 @@ timedatectl set-ntp true
 ```
 
 ### Preparing the disk
+
+wipe the drive from what's there
+span style="color:red">WARNING IT WILL DESTROY ALL THE DATA ON /dev/sda! Make sure to use fdisk -l </span>.
+
+```
+cat /dev/urandom > /dev/sda
+```
+
 #### Create EFI System and Linux LUKS partitions
 ##### Create a 1MiB BIOS boot partition at start just in case it is ever needed in the future
 
