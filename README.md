@@ -194,7 +194,7 @@ hwclock --systohc
 locale-gen
 ```
 
-#### Создем ```locale.conf``` и задай переменную ```LANG``` 
+#### Создем ```locale.conf``` и зададим переменную ```LANG``` 
 ```/etc/locale.conf```
 ```
 LANG=en_US.UTF-8
@@ -236,7 +236,7 @@ HOOKS=(base udev autodetect keyboard modconf block encrypt lvm2 filesystems fsck
 mkinitcpio -p linux
 ```
 
-### Задай рут пароль
+### Зададим рут пароль
 ```
 passwd
 ```
@@ -275,7 +275,7 @@ grub-install --target=x86_64-efi --efi-directory=/efi
 #### Разрешим микрокод апдейты 
 ##### grub-mkconfig автоматически обнаружит эти апдейты и всё сделает заебись(хз чё он делает, есчесн, игнорируй, если знаешь, что делаешь)
 ------
-**Для интел используйте intel-ucode а для amd - amd-ucode**
+**Для интел используем intel-ucode а для amd - amd-ucode**
 -------
 ```
 pacman -S intel-ucode
@@ -286,30 +286,34 @@ pacman -S intel-ucode
 grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
-# Это непереведенный кусок, который избавляет от надобности вводить пароль при загрузке дважды. Но это не конец. (Не обязательно) 
+# Это кусок, который решает проблему с тем, что пароль вводить надо 2 раза для расшифровки . (Не обязательно) 
 
-This is done to avoid having to enter the encryption passphrase twice (once for GRUB, once for initramfs.)
 
-#### Create a keyfile and add it as LUKS key
+
+#### Создаем keyfile и добавим его как ключ для LUKS
 ```
 mkdir /root/secrets && chmod 700 /root/secrets
 head -c 64 /dev/urandom > /root/secrets/crypto_keyfile.bin && chmod 600 /root/secrets/crypto_keyfile.bin
 cryptsetup -v luksAddKey -i 1 /dev/nvme0n1p3 /root/secrets/crypto_keyfile.bin
 ```
 
-#### Add the keyfile to the initramfs image
+#### Добавим keyfile в образ initramfs
 ```/etc/mkinitcpio.conf```
 ```
 FILES=(/root/secrets/crypto_keyfile.bin)
 ```
 
-#### Recreate the initramfs image
+#### Пересоздадим образ
 ```
 mkinitcpio -p linux
 ```
 
-#### Set kernel parameters to unlock the LUKS partition with the keyfile using ```encrypt``` hook
+#### Настроим параметры GRUB так, чтобы расшифровывать LUKS партицию с помощью keyfile  и хука ```encrypt```
 ```/etc/default/grub```
+
+ ---
+ "..." ,  если что означают, что там что-то есть, а не что надо точки ставить XD
+ ---
 ```
 GRUB_CMDLINE_LINUX="... cryptkey=rootfs:/root/secrets/crypto_keyfile.bin"
 ```
@@ -335,7 +339,7 @@ Uncomment to allow members of group wheel to execute any command
 
 save and exit visudo
 
-### Устанавливаем всякую нужную дрянь 
+### Установим всякую нужную дрянь 
 
 git
 base-devel package
