@@ -145,7 +145,6 @@ pacstrap /mnt base linux linux-firmware mkinitcpio lvm2 vi tmux sudo dhcpcd wpa_
 
 ## Если ставим i3
 
-------
 ```
 i3-wm xorg xorg-xinit i3status-rust rofi xorg-server xorg-apps
 ```
