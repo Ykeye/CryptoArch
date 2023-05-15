@@ -399,9 +399,8 @@ lspci -v | grep -A1 -e VGA -e 3D
 ```
 -Ss xf86-video-vmware
 ```
-----
-xf86-video-vmware заменяется на xf86-video и там уже как пойдет. Дефолтный 0 -Ss xf86-video
-----
+xf86-video-vmware заменяется на xf86-video и там уже как пойдет. Дефолтный ```-Ss xf86-video```
+
 
 Включим нужных демонов 
 ```
