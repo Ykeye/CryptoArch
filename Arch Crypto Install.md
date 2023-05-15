@@ -56,57 +56,56 @@ o
 n
 [Enter]
 0
-+1M
-ef02
++1M 
+ef02 # BIOS партиция 1
 n
 [Enter]
 [Enter]
 +550M  
-ef00
+ef00 # EFI партиция 2
 n
 [Enter]
 [Enter]
 [Enter]
-8309
+8309 # Остальное место
 w
 ```
 
-#### Create the LUKS1 encrypted container on the Linux LUKS partition (GRUB does not support LUKS2 as of May 2019)
+####  Создаем LUKS1 шифрованный контейнер ( Вроде GRUB не поддерживает LUKS2 с Мая 2019)
 ```cryptsetup luksFormat --type luks1 --use-random -S 1 -s 512 -h sha512 -i 5000 /dev/nvme0n1p3```
 
-#### Open the container (decrypt it and make available at /dev/mapper/cryptlvm)
+#### Открываем контейнер ( расшифровыватся и становится доступным по /dev/mapper/crytlvm)
 ```
 cryptsetup open /dev/nvme0n1p3 cryptlvm
 ```
 
-### Preparing the logical volumes
-#### Create physical volume on top of the opened LUKS container
+### Готовим логические разделы
+#### Создаем физический раздел поферх открытого LUKS контейнера
 ```
 pvcreate /dev/mapper/cryptlvm
 ```
 
-#### Create the volume group and add physical volume to it
+#### Создаем группу разделов и добавляем туда физический раздел 
 ```
 vgcreate vg /dev/mapper/cryptlvm
 ```
 
-#### Create logical volumes on the volume group for swap, root, and home
+#### Создаем логические разделы для swap, root и home на разделе 
 ```
 lvcreate -L 8G vg -n swap
 lvcreate -L 32G vg -n root
 lvcreate -l 100%FREE vg -n home
 ```
+Рарзмеры свопа и рута стоит поменять в соответсвии со своими нуждами. 
 
-The size of the swap and root partitions are a matter of personal preference.
-
-#### Format filesystems on each logical volume
+#### Форматируем файловые системы
 ```
 mkfs.ext4 /dev/vg/root
 mkfs.ext4 /dev/vg/home
 mkswap /dev/vg/swap
 ```
 
-#### Mount filesystems
+#### Монтируем их
 ```
 mount /dev/vg/root /mnt
 mkdir /mnt/home
@@ -114,59 +113,49 @@ mount /dev/vg/home /mnt/home
 swapon /dev/vg/swap
 ```
 
-### Preparing the EFI partition
-#### Create FAT32 filesystem on the EFI system partition
+### Готовим EFI партицию
+#### Создаем fat32 файловую систему.
 ```
 mkfs.fat -F32 /dev/nvme0n1p2
 ```
 
-#### Create mountpoint for EFI system partition at /efi for compatibility with grub-install and mount it
+#### Создаем точку монтирования для /efi. Нужно для совместимости c grub-install. Монтируем.
 ```
 mkdir /mnt/efi
 mount /dev/nvme0n1p2 /mnt/efi
 ```
 
-## Installation
-### Install necessary packages
+## Установка
+### Устанвливаем самый нужный софт - **base linux linux-firmware mkinitcpio lvm2 vi vim wpa_supplicant grub * -обязательный минимум (вероятно)
 ```
 pacstrap /mnt base linux linux-firmware mkinitcpio lvm2 vi vim tmux sudo dhcpcd wpa_supplicant grub openssh networkmanager network-manager-applet
 ```
- - Add if you want i3
+ - Если ставим i3
 ```
 i3-wm xorg xorg-xinit i3status-rust rofi xorg-server xorg-apps
 ```
 
- - And your terminal emulator of choice ```
+ - И какой-то из эмуляторов терминала, например:
 
-alacritty
-rxvt-unicode
-terminator
+   -alacritty
+   -rxvt-unicode
+   -terminator
 
-## Configure the system
-### Generate an fstab file
+## Настраиваем систему
+### Генерим фстаб!
 ```
 genfstab -U /mnt >> /mnt/etc/fstab
 ```
 
-#### (optional) Change `relatime` option to `noatime`
+#### (Доп!) Change `relatime` option to `noatime`
 ```/mnt/etc/fstab```
-```
-# /dev/mapper/vg-root
-UUID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx / ext4 rw,noatime 0 1
 
-# /dev/mapper/vg-home
-UUID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx / ext4 rw,noatime 0 1
-```
-
-Reduces writes to disk when reading from a file, but may cause issues with programs that rely on file access time
-
-### Enter new system chroot
+### Меняем рут
 ```
 arch-chroot /mnt
 ```
 
-#### At this point you should have the following partitions and logical volumes:
-```lsblk```
+#### На этом моменте при введении ```lsblk``` вы должны видеть что-то вроде:
 
 NAME           | MAJ:MIN | RM  |  SIZE  | RO  | TYPE  | MOUNTPOINT |
 ---------------|---------|-----|--------|-----|-------|------------|
@@ -179,34 +168,33 @@ nvme0n1        |  259:0  |  0  | 465.8G |  0  | disk  |            |
 ....├─vg-root  |  254:2  |  0  |    32G |  0  | lvm   | /          |
 ....└─vg-home  |  254:3  |  0  | 425.2G |  0  | lvm   | /home      |
 
-### Time zone
-#### Set the time zone
-Replace `America/Los_Angeles` with your respective timezone found in `/usr/share/zoneinfo`
+### Время
+#### Установите часовой пояс
+Замените /Europe/Moscos/ на ваш часовой пояс из `/usr/share/zoneinfo`
 ```
 ln -sf /usr/share/zoneinfo/Europe/Moscow /etc/localtime
 ```
 
-#### Run `hwclock` to generate ```/etc/adjtime```
-Assumes hardware clock is set to UTC
+#### Запустите `hwclock` чтоб сгенерировать ```/etc/adjtime```
 ```
 hwclock --systohc
 ```
 
-### Localization
-#### Uncomment ```en_US.UTF-8 UTF-8``` in ```/etc/locale.gen``` and generate locale
+### Локализация
+#### Для англ версии раскомменть ```en_US.UTF-8 UTF-8``` в файое ```/etc/locale.gen``` и сгенерируй локаль
 ```
 locale-gen
 ```
 
-#### Create ```locale.conf``` and set the ```LANG``` variable
+#### Создай ```locale.conf``` и задай переменную ```LANG``` 
 ```/etc/locale.conf```
 ```
 LANG=en_US.UTF-8
 ```
-locale-gen once again
+запусти locale-gen еще раз на всякий случай
 
-### Network configuration
-#### Create the hostname file
+### Настройка сети
+#### Создай файл с хостнеймом
 ```/etc/hostname```
 ```
 myhostname
@@ -214,7 +202,7 @@ myhostname
 
 This is a unique name for identifying your machine on a network.
 
-#### Add matching entries to hosts
+#### Заполни /etc/hosts
 ```/etc/hosts```
 ```
 127.0.0.1 localhost
@@ -223,67 +211,75 @@ This is a unique name for identifying your machine on a network.
 ```
 
 ### Initramfs
-#### Add the ```keyboard```, ```encrypt```, and ```lvm2``` hooks to ```/etc/mkinitcpio.conf```
+#### Добавь ```keyboard```, ```encrypt```, and ```lvm2``` хуки в ```/etc/mkinitcpio.conf```
 
 ```
 HOOKS="base udev autodetect modconf block keymap encrypt lvm2 filesystems keyboard fsck shutdown"
+-----
 ```
-*Note:* ordering matters.
+*ЗАМЕТКО:* Внимание, тут важен порядок и вообще с этой хней я долго химичил, вариант выше самый актуальный. user.append brain 
+-----
 ```
 HOOKS=(base udev autodetect keyboard modconf block encrypt lvm2 filesystems fsck)
 ```
 
-#### Recreate the initramfs image
+#### Обнови initramfs image
 ```
 mkinitcpio -p linux
 ```
 
-### Root password
-#### Set the root password
+### Рутовый пароль
+#### Задай рут пароль
 ```
 passwd
 ```
 
-### Boot loader
+### Загрузчик
 
-#### Configure GRUB to allow booting from /boot on a LUKS1 encrypted partition
-```/etc/default/grub```
+#### Настрой GRUB чтоб бутился с /boot зашифрованной LUKS партиции
+
+```vim /etc/default/grub```
+
 ```
 GRUB_ENABLE_CRYPTODISK=y
 ```
 
-#### Set kernel parameter to unlock the LVM physical volume at boot using ```encrypt``` hook
-##### UUID is the partition containing the LUKS container
+#### Настрой параметры ядра так, чтобы LVM диск расшифровывался при загрузке
+
+##### UUID можно найти введя
 ```blkid```
 ```
 /dev/nvme0n1p3: UUID="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" TYPE="crypto_LUKS" PARTLABEL="Linux LUKS" PARTUUID="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 ```
 
-```/etc/default/grub```
+```vim /etc/default/grub```
+
+Вставь 
 ```
-GRUB_CMDLINE_LINUX="... cryptdevice=UUID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx:cryptlvm root=/dev/vg/root ..."
+GRUB_CMDLINE_LINUX="cryptdevice=UUID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx:cryptlvm root=/dev/vg/root"
 ```
 
-#### Install GRUB to the mounted ESP for UEFI booting
+#### Установи GRUB на ESP для загрузки UEFI
 ```
 pacman -S efibootmgr
 grub-install --target=x86_64-efi --efi-directory=/efi
 ```
 
-#### Enable microcode updates
-##### grub-mkconfig will automatically detect microcode updates and configure appropriately
+#### Разрешим микрокод апдейты 
+##### grub-mkconfig автоматически обнаружит эти апдейты и всё сделает заебись
+------
+**Для интел используйте intel-ucode а для amd - amd-ucode**
+-------
 ```
 pacman -S intel-ucode
 ```
 
-Use intel-ucode for Intel CPUs and amd-ucode for AMD CPUs.
-
-#### Generate GRUB's configuration file
+#### Генерим конфиг файл GRUB
 ```
 grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
-### (recommended) Embed a keyfile in initramfs
+### Это не переведенный кусок, который избавляет от надобности вводить пароль дважды. Не обязательно
 
 This is done to avoid having to enter the encryption passphrase twice (once for GRUB, once for initramfs.)
 
@@ -311,16 +307,16 @@ mkinitcpio -p linux
 GRUB_CMDLINE_LINUX="... cryptkey=rootfs:/root/secrets/crypto_keyfile.bin"
 ```
 
-#### Regenerate GRUB's configuration file
+#### Пересоздай конфиг файл GRUB's e
 ```
 grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
-#### Restrict ```/boot``` permissions
+#### Ограничь доступ до /boot
 ```
 chmod 700 /boot
 ```
-#### Add user
+#### Пользователя добавь
 ```
 useradd --create-home example_user
 passwd example_user
@@ -332,17 +328,18 @@ Uncomment to allow members of group wheel to execute any command
 
 save and exit visudo
 
-### install usefull stuff
+### Нужную дрянь установи
 
 git
 base-devel package
-yay ( AUR helper)
+yay ( AUR помощник)
 ```
 pacman -S --needed git base-devel && git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si
 ```
-Takes about 300MB + 70mb download
-yay
-The installation is now complete. Exit the chroot and reboot.
+Занимет около  300MB + 70mb скачивает
+
+Установка завершена.
+
 ```
 exit
 reboot
@@ -351,14 +348,14 @@ reboot
 ```
 pacman -S 
 ```
-#### install lightweight display manager
+#### Ставим легкий display manager
 ```
 yay -S ly
 ```
 configure ly
 edit - ```/etc/ly/config.ini```
 
-#### do not forget sound 
+#### Не забудь про звук
 ```
 pacman -S pulseaudio alsa-utils alsa-plugins pavucontrol 
 ```
@@ -367,8 +364,8 @@ and utils - fonts
 ```
 pacman -S wget ttf-font-awesome firefox
 ```
-## Post-installation
-### install xorg driver
+## После инсталла
+### Установи драйвера для xorg
 Then, install an appropriate driver. You can search the package database for a complete list of open-source video drivers:
 ```
 lspci -v | grep -A1 -e VGA -e 3D
@@ -383,23 +380,21 @@ systemctl enable dhcpcd
 systemctl enable NetworkManager
 systemctl enable ly
 ````
-## configure i3
+## Настрой i3
 
 
-edit .config/i3/config
-   - enable rofi
-   - change i3status to i3status-rs
+редактируй .config/i3/config
+   - включи rofi
+   - измени i3status на i3status-rs
 
-copy an example status bar config
+скопируй пример конфика status bar g
 
 ```
 cp /usr/share/doc/i3status-rust/examples/config.toml ~.config/i3status-rust/config.toml
 ```
-Your system should now be fully installed, bootable, and fully encrypted.
+Вот и всё.
 
-If you embedded the keyfile in the initramfs image, it should only require your encryption passphrase once to unlock to the system.
-
-For the standard Arch Linux post-installation steps, [RTFM](https://wiki.archlinux.org/index.php/General_recommendations).
+ [RTFM](https://wiki.archlinux.org/index.php/General_recommendations).
 
 ### (recommended) Hardening against Evil Maid attacks
 With an encrypted boot partition, nobody can see or modify your kernel image or initramfs, but you would be still vulnerable to [Evil Maid](https://www.schneier.com/blog/archives/2009/10/evil_maid_attac.html) attacks.
