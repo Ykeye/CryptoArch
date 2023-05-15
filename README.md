@@ -143,17 +143,19 @@ mount /dev/nvme0n1p2 /mnt/efi
 pacstrap /mnt base linux linux-firmware mkinitcpio lvm2 vi tmux sudo dhcpcd wpa_supplicant grub openssh networkmanager network-manager-applet
 ```
 
-#### Если ставим i3
+## Если ставим i3
+
 ------
 ```
 i3-wm xorg xorg-xinit i3status-rust rofi xorg-server xorg-apps
 ```
- - И еще обавь к списку какой-то из эмуляторов терминала, например:
+##### И еще lобавь к списку какой-то из эмуляторов терминала, например:
 
 - alacritty
 - rxvt-unicode
 - terminator
 ------
+
 ## Настраиваем систему
 ### Генерим фстаб!
 ```
