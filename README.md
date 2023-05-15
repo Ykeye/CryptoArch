@@ -341,8 +341,8 @@ passwd example_user
 usermod --append --groups wheel example_user
 visudo
 ```
-Раскомменть чтоб разрешить wheel
-%wheel ALL=(ALL) ALL
+Раскомментим ```%wheel ALL=(ALL) ALL``` чтоб разрешить wheel
+
 
 Сохраним и выйдем из visudo
 
