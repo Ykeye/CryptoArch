@@ -30,9 +30,9 @@ timedatectl set-ntp true
 ### Preparing the disk
 
 wipe the drive from what's there
-*Warning*
-<span style="color:red">WARNING IT WILL DESTROY ALL THE DATA ON /dev/sda! Make sure to use fdisk -l </span>.
-
+--------------
+>*Warning* IT WILL DESTROY ALL THE DATA ON /dev/sda! Make sure to use fdisk
+--------------------------
 ```
 cat /dev/urandom > /dev/sda
 ```
