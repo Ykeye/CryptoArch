@@ -185,7 +185,7 @@ nvme0n1        |  259:0  |  0  | 465.8G |  0  | disk  |            |
 
 ### Время
 #### Установим часовой пояс
-Заменим /Europe/Moscos/ на ваш часовой пояс из `/usr/share/zoneinfo`
+Заменим /Europe/Moscow/ на ваш часовой пояс из `/usr/share/zoneinfo`
 ```
 ln -sf /usr/share/zoneinfo/Europe/Moscow /etc/localtime
 ```
