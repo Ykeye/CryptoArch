@@ -1,17 +1,15 @@
 
 # Очень сильно зашифрованная инсталляция Арча
+------
 
 Это перевод на русский с небольшими дополнениями гайда по установке Arch Linux с шифрованием разделов на LVM с применением LUKS и GRUB для систем на базе UEFI от от [huntrar](https://www.github.com/huntrar).
 Дополнительно без перевода доступен раздел по укреплению системы от атак на Secure Boot типа Evil Maid 
 
 
-------
+
 Основано на гайде от [huntrar](https://www.github.com/huntrar)
 [Смотри Оригинал Тут](https://gist.github.com/huntrar/e42aee630bee3295b2c671d098c81268)
-------
 + дефолтный гайд на [Arch Wiki](https://wiki.archlinux.org/index.php/Dm-crypt/Encrypting_an_entire_system#Encrypted_boot_partition_(GRUB))
-
-
 *Note:* Данный гайд основан на конфигуации с NVMe если у вас  SSD или HDD, замените ```/dev/nvme0nX``` with ```/dev/sdX``` соответсвенно.
 
 
@@ -19,8 +17,8 @@
 -----
 ## ПОМНИ, ЮЗЕРНЕЙМ, ЕСЛИ ТЫ НАКОСЯЧИШЬ, ЗАБУДЕШЬ ПАРОЛЬ, ПОБЪЕШЬ ДИСК ИЛИ ЕЩЕ ЧТО, ОЧЕНЬ ВЕРОЯТНО, ЧТО ВСЁ СТАНЕТ ТЫКВОЙ! ДЕЛАЙ [БЭКАПЫ](https://wiki.archlinux.org/title/Synchronization_and_backup_programs)
 -----
-# ЧТО ДЕЛАТЬ? Я всё ЗАШИФРОВАЛ И СЛОМАЛ!
 
+# ЧТО ДЕЛАТЬ? Я всё ЗАШИФРОВАЛ И СЛОМАЛ!
 Не ссы, Петруха, если ты уже разметил диски и тебе надо зайти обратно, то открывай контейнеры руками: 
 ```
 cryptsetup luksOpen /dev/sdX1 luks
@@ -28,7 +26,7 @@ mount /dev/mapper/vgcrypt-root /mnt
 arch-chroot /mnt /bin/bash
 ```
 
-
+--------------
 
 ## До установки
 ### Подключитесь к интернету
