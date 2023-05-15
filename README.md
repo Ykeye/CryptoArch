@@ -146,9 +146,8 @@ pacstrap /mnt base linux linux-firmware mkinitcpio lvm2 vi tmux sudo dhcpcd wpa_
 ```
 i3-wm xorg xorg-xinit i3status-rust rofi xorg-server xorg-apps
 ```
-----
- Добавь к списку какой-то из эмуляторов терминала, например:
-------
+ - И еще обавь к списку какой-то из эмуляторов терминала, например:
+
 - alacritty
 - rxvt-unicode
 - terminator
