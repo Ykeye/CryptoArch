@@ -1,44 +1,46 @@
-HELP!!! I SCREWED UP
+#Мне пизда! Я всё зашифровал!
 
-If you have already set up you partitions and need to reenter the chroot jail after rebooting because something is not working:
+Не ссы, Петруха, если ты уже разметил диски и тебе надо зайти в root после ребута, т.к. не работает - открывай контейнеры так
 ```
- cryptsetup luksOpen /dev/sdX1 luks
+cryptsetup luksOpen /dev/sdX1 luks
 mount /dev/mapper/vgcrypt-root /mnt
 arch-chroot /mnt /bin/bash
 ```
 
 
-# Arch Linux Full-Disk Encryption Installation Guide 
-This guide provides instructions for an Arch Linux installation featuring full-disk encryption via LVM on LUKS and an encrypted boot partition (GRUB) for UEFI systems.
+# Очень сильно зашифрованная инсталляция Арча
+**Гайд по установке Arch Linux с шифрованием разделов на LVM с применением LUKS и GRUB для систем на базе UEFI.**
+Дополнительно без перевода доступен раздел по укреплению системы от атак на Secure Boot типа Evil Maid 
+Основано на гайде от github.com/huntrar - https://gist.github.com/huntrar/e42aee630bee3295b2c671d098c81268
++ дефолтный гайд на [Arch Wiki](https://wiki.archlinux.org/index.php/Dm-crypt/Encrypting_an_entire_system#Encrypted_boot_partition_(GRUB))
 
-Following the main installation are further instructions to harden against Evil Maid attacks via UEFI Secure Boot custom key enrollment and self-signed kernel and bootloader.
 
-## Preface
-You will find most of this information pulled from the [Arch Wiki](https://wiki.archlinux.org/index.php/Dm-crypt/Encrypting_an_entire_system#Encrypted_boot_partition_(GRUB)) and other resources linked thereof.
+*Note:* Данный гайд основан на конфигуации с NVMe если у вас  SSD или HDD, замените ```/dev/nvme0nX``` with ```/dev/sdX``` соответсвенно.
 
-*Note:* The system was installed on an NVMe SSD, substitute ```/dev/nvme0nX``` with ```/dev/sdX``` or your device as needed.
+## До установки
+### Подключитесь к интернету
+[Arch Wiki](https://wiki.archlinux.org/index.php/installation_guide#Connect_to_the_internet).
 
-## Pre-installation
-### Connect to the internet
-Plug in your Ethernet and go, or for wireless consult the all-knowing [Arch Wiki](https://wiki.archlinux.org/index.php/installation_guide#Connect_to_the_internet).
-
-### Update the system clock
+### Обновите системное время
 ```
 timedatectl set-ntp true
 ```
 
-### Preparing the disk
+### Подготовьте диск
 
-wipe the drive from what's there
+Забейте весь ваш жесткий диск каким-то рандомным спамом
 --------------
->*Warning* IT WILL DESTROY ALL THE DATA ON /dev/sda! Make sure to use fdisk
+>*ВНИМАНИЕ* ДАННАЯ ОПЦИЯ УНИЧТОЖИТ ВСЕ ДАННЫЕ /dev/sda! БЕЗ ВОЗМОЖНОСТИ ВОССТАНОВЛЕНИЯ! ИСПОЛЬЗУЙ fdisk -l и ВНИМАТЕЛЬНО УБЕДИСЬ ЧТО ПОНИМАЕШЬ, ЧТО ДЕЛАЕШЬ!
+--------------------------
+--------------
+>*И ЕЩЕ РАЗ УБЕДИСЬ ЧТО ПОНИМАЕШЬ*
 --------------------------
 ```
 cat /dev/urandom > /dev/sda
 ```
 
-#### Create EFI System and Linux LUKS partitions
-##### Create a 1MiB BIOS boot partition at start just in case it is ever needed in the future
+#### Создаем партиции EFI и Linux LUKS
+##### В начале делаем 1 мб партицию биос на всякий случай
 
 Number | Start (sector) | End (sector) |    Size    | Code |        Name         |
 -------|----------------|--------------|------------|------|---------------------|
@@ -57,7 +59,7 @@ ef02
 n
 [Enter]
 [Enter]
-+550M
++550M  
 ef00
 n
 [Enter]
