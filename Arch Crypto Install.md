@@ -11,6 +11,7 @@ arch-chroot /mnt /bin/bash
 -----
 
 # Очень сильно зашифрованная инсталляция Арча
+
 **Гайд по установке Arch Linux с шифрованием разделов на LVM с применением LUKS и GRUB для систем на базе UEFI.**
 Дополнительно без перевода доступен раздел по укреплению системы от атак на Secure Boot типа Evil Maid 
 Основано на гайде от github.com/huntrar - https://gist.github.com/huntrar/e42aee630bee3295b2c671d098c81268
@@ -30,7 +31,7 @@ timedatectl set-ntp true
 
 ### Подготовьте диск
 
-Забейте весь ваш жесткий диск каким-то рандомным спамом
+(Не обязательно) Забейте весь ваш жесткий диск каким-то рандомным спамом
 --------------
 >*ВНИМАНИЕ* ДАННАЯ ОПЦИЯ УНИЧТОЖИТ ВСЕ ДАННЫЕ /dev/sda! БЕЗ ВОЗМОЖНОСТИ ВОССТАНОВЛЕНИЯ! ИСПОЛЬЗУЙ fdisk -l и ВНИМАТЕЛЬНО УБЕДИСЬ ЧТО ПОНИМАЕШЬ, ЧТО ДЕЛАЕШЬ!
 --------------------------
@@ -169,24 +170,24 @@ nvme0n1        |  259:0  |  0  | 465.8G |  0  | disk  |            |
 ....└─vg-home  |  254:3  |  0  | 425.2G |  0  | lvm   | /home      |
 
 ### Время
-#### Установите часовой пояс
+#### Установим часовой пояс
 Замените /Europe/Moscos/ на ваш часовой пояс из `/usr/share/zoneinfo`
 ```
 ln -sf /usr/share/zoneinfo/Europe/Moscow /etc/localtime
 ```
 
-#### Запустите `hwclock` чтоб сгенерировать ```/etc/adjtime```
+#### Запустим `hwclock` чтоб сгенерировать ```/etc/adjtime```
 ```
 hwclock --systohc
 ```
 
 ### Локализация
-#### Для англ версии раскомменть ```en_US.UTF-8 UTF-8``` в файое ```/etc/locale.gen``` и сгенерируй локаль
+#### Для англ версии раскомментим ```en_US.UTF-8 UTF-8``` в файое ```/etc/locale.gen``` и сгенерируй локаль
 ```
 locale-gen
 ```
 
-#### Создай ```locale.conf``` и задай переменную ```LANG``` 
+#### Создем ```locale.conf``` и задай переменную ```LANG``` 
 ```/etc/locale.conf```
 ```
 LANG=en_US.UTF-8
@@ -202,7 +203,7 @@ myhostname
 
 This is a unique name for identifying your machine on a network.
 
-#### Заполни /etc/hosts
+#### Заполним /etc/hosts
 ```/etc/hosts```
 ```
 127.0.0.1 localhost
@@ -211,13 +212,13 @@ This is a unique name for identifying your machine on a network.
 ```
 
 ### Initramfs
-#### Добавь ```keyboard```, ```encrypt```, and ```lvm2``` хуки в ```/etc/mkinitcpio.conf```
+#### Добавим ```keyboard```, ```encrypt```, and ```lvm2``` хуки в ```/etc/mkinitcpio.conf```
 
 ```
 HOOKS="base udev autodetect modconf block keymap encrypt lvm2 filesystems keyboard fsck shutdown"
 -----
 ```
-*ЗАМЕТКО:* Внимание, тут важен порядок и вообще с этой хней я долго химичил, вариант выше самый актуальный. user.append brain 
+*ЗАМЕТКО:* Внимание, тут важен порядок, и вообще, с этой хней я долго химичил, вариант выше самый актуальный. *user.append brain* 
 -----
 ```
 HOOKS=(base udev autodetect keyboard modconf block encrypt lvm2 filesystems fsck)
@@ -266,7 +267,7 @@ grub-install --target=x86_64-efi --efi-directory=/efi
 ```
 
 #### Разрешим микрокод апдейты 
-##### grub-mkconfig автоматически обнаружит эти апдейты и всё сделает заебись
+##### grub-mkconfig автоматически обнаружит эти апдейты и всё сделает заебись(хз чё он делает, есчесн, игнорируй, если знаешь, что делаешь)
 ------
 **Для интел используйте intel-ucode а для amd - amd-ucode**
 -------
@@ -279,7 +280,7 @@ pacman -S intel-ucode
 grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
-### Это не переведенный кусок, который избавляет от надобности вводить пароль дважды. Не обязательно
+# Это непереведенный кусок, который избавляет от надобности вводить пароль при загрузке дважды. Но это не конец. (Не обязательно) 
 
 This is done to avoid having to enter the encryption passphrase twice (once for GRUB, once for initramfs.)
 
@@ -307,16 +308,16 @@ mkinitcpio -p linux
 GRUB_CMDLINE_LINUX="... cryptkey=rootfs:/root/secrets/crypto_keyfile.bin"
 ```
 
-#### Пересоздай конфиг файл GRUB's e
+#### Пересоздадим конфиг файл GRUB's e
 ```
 grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
-#### Ограничь доступ до /boot
+#### Ограничим доступ до /boot
 ```
 chmod 700 /boot
 ```
-#### Пользователя добавь
+#### Пользователя добавим
 ```
 useradd --create-home example_user
 passwd example_user
@@ -328,7 +329,7 @@ Uncomment to allow members of group wheel to execute any command
 
 save and exit visudo
 
-### Нужную дрянь установи
+### Устанавливаем всякую нужную дрянь 
 
 git
 base-devel package
@@ -338,13 +339,15 @@ pacman -S --needed git base-devel && git clone https://aur.archlinux.org/yay.git
 ```
 Занимет около  300MB + 70mb скачивает
 
-Установка завершена.
+### Установка завершена.
 
 ```
 exit
 reboot
 ```
-
+-----
+### После ребута
+-----
 ```
 pacman -S 
 ```
@@ -352,8 +355,13 @@ pacman -S
 ```
 yay -S ly
 ```
-configure ly
-edit - ```/etc/ly/config.ini```
+#### Конфигурим его 
+
+редактируй соответственно - ```/etc/ly/config.ini```
+
+----
+Рекомендуется включить animation для максимального doom hellfire
+----
 
 #### Не забудь про звук
 ```
@@ -365,38 +373,44 @@ and utils - fonts
 pacman -S wget ttf-font-awesome firefox
 ```
 ## После инсталла
-### Установи драйвера для xorg
-Then, install an appropriate driver. You can search the package database for a complete list of open-source video drivers:
+### Настраиваем драйвера для xorg
 ```
 lspci -v | grep -A1 -e VGA -e 3D
 ```
+Например так:
 ```
 -Ss xf86-video-vmware
 ```
-enable services 
+----
+xf86-video-vmware заменяется на xf86-video и там уже как пойдет. Дефолтный 0 -Ss xf86-video
+----
+
+Включим нужных демонов 
 ```
 systemctl enable sshd
 systemctl enable dhcpcd
 systemctl enable NetworkManager
 systemctl enable ly
 ````
-## Настрой i3
+## Настраиваем i3 и i3-status-rust
 
 
-редактируй .config/i3/config
-   - включи rofi
-   - измени i3status на i3status-rs
+редактируем .config/i3/config
+   - включаем rofi
+   - изменяем i3status на i3status-rs
 
-скопируй пример конфика status bar g
+скопируем пример конфига status-bar-rust
 
 ```
 cp /usr/share/doc/i3status-rust/examples/config.toml ~.config/i3status-rust/config.toml
 ```
-Вот и всё.
+--------------------
+--------------------
+--------------
 
- [RTFM](https://wiki.archlinux.org/index.php/General_recommendations).
 
-### (recommended) Hardening against Evil Maid attacks
+
+### ( Рекомендовано к исполнению) Hardening against Evil Maid attacks
 With an encrypted boot partition, nobody can see or modify your kernel image or initramfs, but you would be still vulnerable to [Evil Maid](https://www.schneier.com/blog/archives/2009/10/evil_maid_attac.html) attacks.
 
 One possible solution is to use UEFI Secure Boot. Get rid of preloaded Secure Boot keys (you really don't want to trust Microsoft and OEM), enroll [your own Secure Boot keys](https://wiki.archlinux.org/index.php/Secure_Boot#Using_your_own_keys) and sign the GRUB boot loader with your keys. Evil Maid would be unable to boot modified boot loader (not signed by your keys) and the attack is prevented.
