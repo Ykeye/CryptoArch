@@ -158,7 +158,8 @@ i3-wm xorg xorg-xinit i3status-rust rofi xorg-server xorg-apps
 genfstab -U /mnt >> /mnt/etc/fstab
 ```
 
-#### (Доп!) Change `relatime` option to `noatime`
+#### (Доп!) Изменяем `relatime` на `noatime` (может вызывать косяки)
+
 ```/mnt/etc/fstab```
 
 ### Меняем рут
