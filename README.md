@@ -346,11 +346,12 @@ visudo
 
 Сохраним и выйдем из visudo
 
-### Установим всякую нужную дрянь 
+### Установим всякую нужную дрянь:
 
-git
-base-devel package
-yay ( AUR помощник)
+   - git
+   - base-devel package
+   - yay ( AUR помощник)
+
 ```
 pacman -S --needed git base-devel && git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si
 ```
