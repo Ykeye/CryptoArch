@@ -2,6 +2,43 @@
 # Очень сильно зашифрованная инсталляция Арча
 ------
 
+
+
+<details>
+   
+<summary> Версия для BTRFS пока не тестировалась, основана на гайде  </summary>
+
+=== Btrfs ===
+Create the filesystem
+ mkfs.btrfs --label system /dev/mapper/system
+Mount at root
+ mount -t btrfs LABEL=system /mnt
+Create the root subvolume (this will be '/' on the final system)
+ btrfs subvolume create /mnt/@root
+Create the home directory subvolume (this will hold all user data)
+ btrfs subvolume create /mnt/@home
+Create a subvolume for snapshot storage
+ btrfs subvolume create /mnt/@snapshots
+Unmount root so we can change mount options
+ umount -R /mnt
+Remount the root subvolume with options. The compression here is optional, zstd offers the best storage but you may prefer a different algorithm for speed, or omit entirely. Only use ssd if you are on an SSD. You can also enable atime if desired, but it comes with overhead.
+ mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=@root LABEL=system /mnt
+Mount the home subvolume (same deal with options as previous step)
+ mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=@home LABEL=system /mnt/home
+Mount the snapshots volume to '/.snapshots' (same deal with options as previous step)
+ mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=@snapshots LABEL=system /mnt/.snapshots
+
+=== EFI System Partition ===
+Format the partition as FAT-32, with label 'EFI'
+ mkfs.fat -F32 -n EFI /dev/disk/by-partlabel/EFI
+Make the mount directory
+ mkdir /mnt/efi
+Mount the ESP
+ mount LABEL=EFI /mnt/efi
+
+</details>?
+
+
 Это перевод на русский с небольшими дополнениями гайда по установке Arch Linux с шифрованием разделов на LVM с применением LUKS и GRUB для систем на базе UEFI от от [huntrar](https://www.github.com/huntrar).
 Дополнительно без перевода доступен раздел по укреплению системы от атак на Secure Boot типа Evil Maid 
 
