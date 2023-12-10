@@ -4,6 +4,8 @@
 
 
 <details> <summary> Версия для BTRFS пока не тестировалась, основана на гайде  </summary>
+
+
    
 === Btrfs ===
 Create the filesystem
@@ -32,6 +34,8 @@ Make the mount directory
  mkdir /mnt/efi
 Mount the ESP
  mount LABEL=EFI /mnt/efi
+
+
 
 
 </details>
