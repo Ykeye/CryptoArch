@@ -3,11 +3,8 @@
 ------
 
 
-
-<details>
+<details> <summary> Версия для BTRFS пока не тестировалась, основана на гайде  </summary>
    
-<summary> Версия для BTRFS пока не тестировалась, основана на гайде  </summary>
-
 === Btrfs ===
 Create the filesystem
  mkfs.btrfs --label system /dev/mapper/system
@@ -36,7 +33,8 @@ Make the mount directory
 Mount the ESP
  mount LABEL=EFI /mnt/efi
 
-</details>?
+
+</details>
 
 
 Это перевод на русский с небольшими дополнениями гайда по установке Arch Linux с шифрованием разделов на LVM с применением LUKS и GRUB для систем на базе UEFI от от [huntrar](https://www.github.com/huntrar).
