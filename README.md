@@ -5,11 +5,9 @@
 
 <details> <summary> Версия для BTRFS пока не тестировалась, основана на гайде  </summary>
 
-=== Btrfs ===
-
 
 Create the filesystem
- mkfs.btrfs --label system /dev/mapper/system
+mkfs.btrfs --label system /dev/mapper/system
 Mount at root
  mount -t btrfs LABEL=system /mnt
 Create the root subvolume (this will be '/' on the final system)
