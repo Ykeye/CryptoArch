@@ -5,7 +5,9 @@
 
 Версия для BTRFS пока не тестировалась, основана на гайде https://wiki.archlinux.org/title/User:ZachHilman/Installation_-_Btrfs_%2B_LUKS2_%2B_Secure_Boot
 
-
+<details>
+ 
+```
 Create the filesystem
 mkfs.btrfs --label system /dev/mapper/system
 Mount at root
@@ -33,10 +35,9 @@ Make the mount directory
 Mount the ESP
  mount LABEL=EFI /mnt/efi
 
+```
 
-
-
-
+</details>
 
 
 Это перевод на русский с небольшими дополнениями гайда по установке Arch Linux с шифрованием разделов на LVM с применением LUKS и GRUB для систем на базе UEFI от от [huntrar](https://www.github.com/huntrar).
