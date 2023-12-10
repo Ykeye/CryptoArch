@@ -5,9 +5,9 @@
 
 <details> <summary> Версия для BTRFS пока не тестировалась, основана на гайде  </summary>
 
-
-   
 === Btrfs ===
+
+
 Create the filesystem
  mkfs.btrfs --label system /dev/mapper/system
 Mount at root
