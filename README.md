@@ -1,5 +1,5 @@
 
-# Очень сильно зашифрованная инсталляция Арч Линукс
+# Очень сильно зашифрованная инсталляция Арч Линукс с btrfs и снэпшотами!
 ------
 
 
@@ -141,25 +141,52 @@ vgcreate vg /dev/mapper/cryptlvm
 #### Создаем логические разделы для swap, root и home на разделе 
 ```
 lvcreate -L 8G vg -n swap
-lvcreate -L 32G vg -n root
-lvcreate -l 100%FREE vg -n home
+lvcreate -l 100%FREE vg -n system
 ```
 Рарзмеры свопа и рута стоит поменять в соответсвии со своими нуждами. 
 
 #### Форматируем файловые системы
 ```
-mkfs.ext4 /dev/vg/root
-mkfs.ext4 /dev/vg/home
+mkfs.btrfs --label system /dev/vg/system
 mkswap /dev/vg/swap
 ```
 
-#### Монтируем их
+
+####
+
+Монтируем btrfs систему
+
 ```
-mount /dev/vg/root /mnt
-mkdir /mnt/home
-mount /dev/vg/home /mnt/home
+  mount -t btrfs LABEL=system /mnt
+```
+
+#### Создаем BTRFS subvolume и монтируем их и монтируем swap
+```
+btrfs subvolume create /mnt/@root
+btrfs subvolume create /mnt/@home
+btrfs subvolume create /mnt/@snapshots
+
 swapon /dev/vg/swap
 ```
+
+потом делаем `umount -R /mnt`
+
+и млнтируем их обратно с такими вот параметрами
+```
+mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=@root LABEL=system /mnt
+```
+
+```
+mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=@root LABEL=system /mnt
+```
+```
+mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=@home LABEL=system /mnt/home
+```
+
+```
+mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=@snapshots LABEL=system /mnt/.snapshots
+```
+
 
 ### Готовим EFI партицию
 #### Создаем fat32 файловую систему.
@@ -175,7 +202,7 @@ mount /dev/nvme0n1p2 /mnt/efi
 
 ## Установка
 ### Устанвливаем самый нужный софт -
-```base linux linux-firmware mkinitcpio lvm2 vi wpa_supplicant grub``` ≈ обязательный минимум
+```base linux linux-firmware mkinitcpio lvm2 vi wpa_supplicant btrfs-progs grub``` ≈ обязательный минимум для ноутбуков ( wpa_supplicant можно убрать если не нужен wi-fi)
 
 ```
 pacstrap /mnt base linux linux-firmware mkinitcpio lvm2 vi vim tmux sudo dhcpcd wpa_supplicant grub openssh networkmanager network-manager-applet
@@ -210,17 +237,16 @@ arch-chroot /mnt
 
 #### На этом моменте при введении ```lsblk``` вы должны видеть что-то вроде:
 
-NAME           | MAJ:MIN | RM  |  SIZE  | RO  | TYPE  | MOUNTPOINT |
----------------|---------|-----|--------|-----|-------|------------|
-nvme0n1        |  259:0  |  0  | 465.8G |  0  | disk  |            |
-├─nvme0n1p1    |  259:4  |  0  |     1M |  0  | part  |            |
-├─nvme0n1p2    |  259:5  |  0  |   550M |  0  | part  | /efi       |
-├─nvme0n1p3    |  259:6  |  0  | 465.2G |  0  | part  |            |
-..└─cryptlvm   |  254:0  |  0  | 465.2G |  0  | crypt |            |
-....├─vg-swap  |  254:1  |  0  |     8G |  0  | lvm   | [SWAP]     |
-....├─vg-root  |  254:2  |  0  |    32G |  0  | lvm   | /          |
-....└─vg-home  |  254:3  |  0  | 425.2G |  0  | lvm   | /home      |
-
+NAME            MAJ:MIN RM   SIZE RO TYPE  MOUNTPOINTS
+sda               8:0    0   100G  0 disk
+|-sda1            8:1    0     1M  0 part
+|-sda2            8:2    0   550M  0 part  /efi
+`-sda3            8:3    0  99.5G  0 part
+  `-cryptlvm    254:0    0  99.5G  0 crypt
+    |-vg-swap   254:1    0     8G  0 lvm   [SWAP]
+    `-vg-system 254:2    0  91.5G  0 lvm   /home
+                                           /.snapshots
+                                           /
 ### Время
 #### Установим часовой пояс
 Заменим /Europe/Moscow/ на ваш часовой пояс из `/usr/share/zoneinfo`
@@ -263,10 +289,10 @@ myhostname - произвольное сетевое имя устройства
 ```
 
 ### Initramfs
-#### Добавим ```keyboard```, ```encrypt```, and ```lvm2``` хуки в ```/etc/mkinitcpio.conf```
+#### Добавим ```keyboard```, ```encrypt```,  ```lvm2``` и ```consolefont``` ```btrfs``` хуки в ```/etc/mkinitcpio.conf```
 
 ```
-HOOKS="base udev autodetect modconf block keymap encrypt lvm2 filesystems keyboard fsck shutdown"
+HOOKS=(base udev autodetect modconf block keymap encrypt lvm2 consolefont filesystems btrfs keyboard fsck shutdown)
 
 ```
 ----
@@ -310,8 +336,12 @@ GRUB_ENABLE_CRYPTODISK=y
 
 ##### Вставим вместо xxxxxx UUID из предыдущего шага
 ```
-GRUB_CMDLINE_LINUX="cryptdevice=UUID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx:cryptlvm root=/dev/vg/root"
+GRUB_CMDLINE_LINUX="cryptdevice=UUID=9c726b8d-a693-47f0-934a-e2f7cbaf1989:cryptlvm root=/dev/mapper/vg-system subvol=/@root loglevel=3 quiet cryptkey=rootfs:/root/secrets/crypto_keyfile.bin cryptkey=rootfs:/root/secrets/crypto_keyfile.bin"
+
 ```
+
+"cryptkey=" расщифровывает 2ой раунд сохраненным ключем. Нужно чтобы не вводить пароль 2 раза подряд.
+
 
 #### Установим и настроим efiboot manager для GRUB загрузки UEFI
 ```
@@ -355,18 +385,6 @@ FILES=(/root/secrets/crypto_keyfile.bin)
 mkinitcpio -p linux
 ```
 
-#### Настроим параметры GRUB так, чтобы расшифровывать LUKS партицию с помощью keyfile  и хука ```encrypt```
-```/etc/default/grub```
-
-```
-GRUB_CMDLINE_LINUX="... cryptkey=rootfs:/root/secrets/crypto_keyfile.bin"
-```
-
-#### Пересоздадим конфиг файл GRUB's e
-```
-grub-mkconfig -o /boot/grub/grub.cfg
-```
-</details> 
 
 #### Ограничим доступ до /boot
 ```
