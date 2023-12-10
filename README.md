@@ -179,8 +179,8 @@ swapon /dev/vg/swap
 
 потом делаем `umount -R /mnt`
 
-и млнтируем их обратно с такими вот параметрами
-```
+и монтируем их обратно с такими вот параметрами ( внимательно с ssd! ssd не нужен, если у вас не sdd {хсяе поворот!})
+```ь
 mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=@root LABEL=system /mnt
 ```
 
@@ -194,6 +194,8 @@ mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=@home 
 ```
 mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=@snapshots LABEL=system /mnt/.snapshots
 ```
+
+
 
 
 ### Готовим EFI партицию
@@ -344,7 +346,7 @@ GRUB_ENABLE_CRYPTODISK=y
 
 ##### Вставим вместо xxxxxx UUID из предыдущего шага
 ```
-GRUB_CMDLINE_LINUX="cryptdevice=UUID=9c726b8d-a693-47f0-934a-e2f7cbaf1989:cryptlvm root=/dev/mapper/vg-system subvol=/@root loglevel=3 quiet cryptkey=rootfs:/root/secrets/crypto_keyfile.bin cryptkey=rootfs:/root/secrets/crypto_keyfile.bin"
+GRUB_CMDLINE_LINUX="cryptdevice=UUID=9c726b8d-a693-47f0-934a-e2f7cbaf1989:cryptlvm root=/dev/mapper/vg-system subvol=/@root loglevel=3 quiet"
 
 ```
 
