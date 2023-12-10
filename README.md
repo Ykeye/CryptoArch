@@ -33,6 +33,7 @@ Mount the snapshots volume to '/.snapshots' (same deal with options as previous 
 ```
  mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=@snapshots LABEL=system /mnt/.snapshots
 ```
+```
 
 === EFI System Partition ===
 Format the partition as FAT-32, with label 'EFI'
