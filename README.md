@@ -1,4 +1,4 @@
-
+s
 # Очень сильно зашифрованная инсталляция Арч Линукс с btrfs и снэпшотами!
 ------
 
@@ -20,12 +20,19 @@ Create a subvolume for snapshot storage
  btrfs subvolume create /mnt/@snapshots
 Unmount root so we can change mount options
  umount -R /mnt
-Remount the root subvolume with options. The compression here is optional, zstd offers the best storage but you may prefer a different algorithm for speed, or omit entirely. Only use ssd if you are on an SSD. You can also enable atime if desired, but it comes with overhead.
- mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=@root LABEL=system /mnt
+```
+Remount the root subvolume with options. The compression here is optional, zstd offers the best storage but you may prefer a different algorithm for speed, or omit entirely. Only use ssd if you are on an SSD. You can also enable atime if desired, but it comes with overhead. 
+```
+ mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd, #####ssd##### noatime,subvol=@root LABEL=system /mnt
+```
 Mount the home subvolume (same deal with options as previous step)
+```
  mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=@home LABEL=system /mnt/home
+```
 Mount the snapshots volume to '/.snapshots' (same deal with options as previous step)
+```
  mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=@snapshots LABEL=system /mnt/.snapshots
+```
 
 === EFI System Partition ===
 Format the partition as FAT-32, with label 'EFI'
