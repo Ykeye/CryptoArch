@@ -1,15 +1,15 @@
 
-# Очень сильно зашифрованная инсталляция Арча
+# Очень сильно зашифрованная инсталляция Арч Линукс
 ------
 
 
-<details> <summary> Версия для BTRFS пока не тестировалась, основана на гайде  </summary>
+Версия для BTRFS пока не тестировалась, основана на гайде https://wiki.archlinux.org/title/User:ZachHilman/Installation_-_Btrfs_%2B_LUKS2_%2B_Secure_Boot
 
 
 Create the filesystem
 mkfs.btrfs --label system /dev/mapper/system
 Mount at root
- mount -t btrfs LABEL=system /mnt
+mount -t btrfs LABEL=system /mnt
 Create the root subvolume (this will be '/' on the final system)
  btrfs subvolume create /mnt/@root
 Create the home directory subvolume (this will hold all user data)
@@ -36,7 +36,7 @@ Mount the ESP
 
 
 
-</details>
+
 
 
 Это перевод на русский с небольшими дополнениями гайда по установке Arch Linux с шифрованием разделов на LVM с применением LUKS и GRUB для систем на базе UEFI от от [huntrar](https://www.github.com/huntrar).
