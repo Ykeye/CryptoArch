@@ -407,6 +407,9 @@ mkinitcpio -p linux
 ```
 chmod 700 /boot
 ```
+
+</details>
+
 #### Пользователя добавим
 ```
 useradd --create-home example_user
