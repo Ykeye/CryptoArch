@@ -247,6 +247,7 @@ arch-chroot /mnt
 
 #### На этом моменте при введении ```lsblk``` вы должны видеть что-то вроде:
 
+```
 NAME            MAJ:MIN RM   SIZE RO TYPE  MOUNTPOINTS
 sda               8:0    0   100G  0 disk
 |-sda1            8:1    0     1M  0 part
@@ -256,7 +257,9 @@ sda               8:0    0   100G  0 disk
     |-vg-swap   254:1    0     8G  0 lvm   [SWAP]
     `-vg-system 254:2    0  91.5G  0 lvm   /home
                                            /.snapshots
-                                           /
+                                          /
+
+```
 ### Время
 #### Установим часовой пояс
 Заменим /Europe/Moscow/ на ваш часовой пояс из `/usr/share/zoneinfo`
