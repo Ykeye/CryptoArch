@@ -302,11 +302,11 @@ myhostname - произвольное сетевое имя устройства
 #### Добавим ```keyboard```, ```encrypt```,  ```lvm2``` и ```consolefont``` ```btrfs``` хуки в ```/etc/mkinitcpio.conf```
 
 ```
-HOOKS=(base udev autodetect modconf block keymap encrypt lvm2 consolefont filesystems btrfs keyboard fsck shutdown)
+HOOKS=(base udev modconf block keymap encrypt lvm2 consolefont filesystems btrfs keyboard fsck shutdown)
 
 ```
 ----
-#### *ЗАМЕТКО:* Внимание, тут важен порядок! Ориентируемся на вариант выше - самый актуальный.
+#### *ЗАМЕТКО:* Внимание, тут важен порядок! Ориентируемся на вариант выше в котором убран autodetect ( вероятно подгружает лишнего, но пока не нашел почему без него не работает) - самый актуальный.
 ----
 *user.append brain* 
 
@@ -346,12 +346,12 @@ GRUB_ENABLE_CRYPTODISK=y
 
 ##### Вставим вместо xxxxxx UUID из предыдущего шага
 ```
-GRUB_CMDLINE_LINUX="cryptdevice=UUID=9c726b8d-a693-47f0-934a-e2f7cbaf1989:cryptlvm root=/dev/mapper/vg-system subvol=/@root loglevel=3 quiet"
+GRUB_CMDLINE_LINUX="cryptdevice=UUID=9c726b8d-a693-47f0-934a-e2f7cbaf1989:cryptlvm root=/dev/mapper/vg-system subvol=/@root loglevel=3 quiet cryptkey=/root/secrets/crypto_keyfile.bin"
 
 ```
 
 
-"cryptkey=" расщифровывает 2ой раунд сохраненным ключем. Нужно чтобы не вводить пароль 2 раза подряд и похоже это не работает, надо подумать
+"cryptkey=" расшифровывает 2ой раунд сохраненным ключем. Нужно чтобы не вводить пароль 2 раза подряд.
 
 
 #### Установим и настроим efiboot manager для GRUB загрузки UEFI
@@ -362,7 +362,7 @@ grub-install --target=x86_64-efi --efi-directory=/efi
 
 #### Разрешим микрокод апдейты 
 
-__grub-mkconfig автоматически обнаружит эти апдейты и всё сделает заебись(хз чё он делает, есчесн, игнорируй, если знаешь, что делаешь)__
+__grub-mkconfig автоматически обнаружит эти апдейты и всё сделает заебись(игнорируй, если знаешь, что делаешь)__
 Для интел используем intel-ucode а для amd - amd-ucode
 ```
 pacman -S intel-ucode
@@ -391,11 +391,15 @@ FILES=(/root/secrets/crypto_keyfile.bin)
 ```
 
 
-#### Пересоздадим образ
+#### Пересоздадим default образ
+```
+mkinitcpio -P
+```
+
+Или так для пересоздания linux образа
 ```
 mkinitcpio -p linux
 ```
-
 
 #### Ограничим доступ до /boot
 ```
