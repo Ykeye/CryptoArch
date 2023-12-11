@@ -304,7 +304,7 @@ myhostname - произвольное сетевое имя устройства
 #### Добавим ```keyboard```, ```encrypt```,  ```lvm2``` и ```consolefont``` ```btrfs``` хуки в ```/etc/mkinitcpio.conf```
 
 ```
-HOOKS=(base udev modconf block keymap encrypt lvm2 consolefont filesystems btrfs keyboard fsck shutdown)
+HOOKS=(base udev modconf block keymap encrypt lvm2 btrfs autodetect consolefont filesystems keyboard fsck shutdown)
 
 ```
 ----
