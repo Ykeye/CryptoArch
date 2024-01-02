@@ -370,7 +370,35 @@ __grub-mkconfig автоматически обнаружит эти апдей�
 pacman -S intel-ucode
 ```
 
-#### Генерим конфиг файл GRUB
+### Установим grub-btrfs который добаивит наши снепшоты в бут.
+
+Для работы демона grub-btrfsd потребуется:
+```
+sudo pacman -S inotify-tools 
+```
+Далее 
+```
+sudo pacman -S grub-btrfs
+```
+Конфиг - 
+```
+vim /etc/default/grub-btrfs/config 
+```
+1 раз запустить руками
+
+```
+sudo /etc/grub.d/41_snapshots-btrfs
+grub-mkconfig -o /boot/grub/grub.cfg
+
+```
+После чего можно запустить демон - 
+
+```
+sudo systemctl start grub-btrfsd
+sudo systemctl enable grub-btrfsd
+```
+
+#### Генерим конфиг файл GRUB если не делали в прошлом шаге
 ```
 grub-mkconfig -o /boot/grub/grub.cfg
 ```
