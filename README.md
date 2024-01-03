@@ -169,6 +169,7 @@ mkswap /dev/vg/swap
 
 #### Создаем BTRFS subvolume и монтируем их и монтируем swap
 ```
+btrfs subvolume create /mnt/@rescue
 btrfs subvolume create /mnt/@root
 btrfs subvolume create /mnt/@home
 btrfs subvolume create /mnt/@snapshots
@@ -178,7 +179,7 @@ swapon /dev/vg/swap
 
 потом делаем `umount -R /mnt`
 
-и монтируем их обратно с такими вот параметрами ( внимательно с ssd! ssd не нужен, если у вас не sdd {хсяе поворот!})
+и монтируем их обратно с такими вот параметрами ( внимательно с ssd! ssd не нужен, если у вас не sdd {поворот!})
 ```ь
 mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=@root LABEL=system /mnt
 ```
@@ -193,7 +194,9 @@ mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=@home 
 ```
 mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=@snapshots LABEL=system /mnt/.snapshots
 ```
-
+```
+mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,subvol=@rescue LABEL=system /mnt/.rescue
+```
 
 
 
@@ -301,10 +304,11 @@ myhostname - произвольное сетевое имя устройства
 ```
 
 ### Initramfs
-#### Добавим ```keyboard```, ```encrypt```,  ```lvm2``` и ```consolefont``` ```btrfs``` хуки в ```/etc/mkinitcpio.conf```
+#### Добавим ```keyboard```, ```encrypt```,  ```lvm2``` и ```consolefont``` ```btrfs``` ```grub-btrfs-overlays``` хуки в ```/etc/mkinitcpio.conf```
 
 ```
-HOOKS=(base udev modconf block keymap encrypt lvm2 btrfs autodetect consolefont filesystems keyboard fsck shutdown)
+HOOKS=(base udev modconf block keymap encrypt lvm2 btrfs autodetect consolefont filesystems keyboard fsck shutdown grub-btrfs-overlayfs)
+
 
 ```
 ----
@@ -384,7 +388,16 @@ sudo pacman -S grub-btrfs
 ```
 vim /etc/default/grub-btrfs/config 
 ```
-1 раз запустить руками
+
+И отредактируем сервис, чтобы искал снепшоты в директории restore ( туда будем периодически кроном класть rw снепшоты, т.к. дефолтные - read only)
+В сервисе заменим .snapshots на нужную нам директорию.
+
+```
+sudo systemctl edit --full grub-btrfsd 
+```
+
+
+1 раз запустить руками для генерации первичного конфига
 
 ```
 sudo /etc/grub.d/41_snapshots-btrfs
