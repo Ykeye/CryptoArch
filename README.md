@@ -411,7 +411,7 @@ sudo systemctl start grub-btrfsd
 sudo systemctl enable grub-btrfsd
 ```
 
-Для перекладывания ro снепшотов в read-write снепы пока используем следующий крон скрипт(тут требуется доработка точно):
+Для перекладывания ro снепшотов в read-write снепы пока используем следующий крон скрипт. Он также поддерживает количество бекапов-ресторов не менее 4. Удаляя всегда самый несвежий.
 
 ```
 #!/bin/bash
@@ -423,7 +423,13 @@ for f in "${files[@]}"; do
   fi
 done
 
-btrfs subvolume snapshot $newest /restore 
+btrfs subvolume snapshot $newest /restore
+
+if (($(ls /restore | wc -l) > 4)); then
+	files=(/restore/*) 
+	rm -rf ${files[0]}
+	fi
+
 ```
 
 #### Генерим конфиг файл GRUB если не делали в прошлом шаге
