@@ -411,6 +411,21 @@ sudo systemctl start grub-btrfsd
 sudo systemctl enable grub-btrfsd
 ```
 
+Для перекладывания ro снепшотов в read-write снепы пока используем следующий крон скрипт(тут требуется доработка точно):
+
+```
+#!/bin/bash
+
+files=(/.snapshots/ROOT*) newest=${files[0]}
+for f in "${files[@]}"; do
+  if [[ $f -nt $newest ]]; then
+    newest=$f
+  fi
+done
+
+btrfs subvolume snapshot $newest /restore 
+```
+
 #### Генерим конфиг файл GRUB если не делали в прошлом шаге
 ```
 grub-mkconfig -o /boot/grub/grub.cfg
