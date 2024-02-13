@@ -214,10 +214,10 @@ mount /dev/nvme0n1p2 /mnt/efi
 
 ## Установка
 ### Устанвливаем самый нужный софт -
-```base linux linux-firmware mkinitcpio lvm2 vi wpa_supplicant btrfs-progs grub``` ≈ обязательный минимум для ноутбуков ( wpa_supplicant можно убрать если не нужен wi-fi)
+```base linux linux-firmware mkinitcpio lvm2 vi wpa_supplicant btrfs-progs grub grub-btrfs``` ≈ обязательный минимум для ноутбуков ( wpa_supplicant можно убрать если не нужен wi-fi)
 
 ```
-pacstrap /mnt base linux linux-firmware mkinitcpio lvm2 vi vim tmux sudo dhcpcd wpa_supplicant grub openssh networkmanager network-manager-applet
+pacstrap /mnt base linux linux-firmware mkinitcpio lvm2 vi vim tmux sudo dhcpcd wpa_supplicant grub btrfs-progs grub-btrfs openssh networkmanager network-manager-applet
 ```
 
 ## Если ставим i3
