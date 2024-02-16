@@ -3,7 +3,7 @@
 
 
 Версия для BTRFS пока не тестировалась, основана на гайде https://wiki.archlinux.org/title/User:ZachHilman/Installation_-_Btrfs_%2B_LUKS2_%2B_Secure_Boot
-
+Есть также версия для MBR - https://wiki.gentoo.org/wiki/User:Nathanlkoch/Tutorials/BTRFS_Encryped_Root_On_Bios
 <details>
  
 ```
